@@ -8,7 +8,7 @@
 #include <QString>
 
 /* 分离表达式 */
-QString* SepExpression(const QString str);
+int SepExpression(const QString str,QString *denominator,QString *Molecular);
 
 
 #endif // SEPARATION_H

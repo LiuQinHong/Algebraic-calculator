@@ -5,6 +5,8 @@
 
 #include <separation.h>
 
-QString* SepExpression(const QString str){
+
+int SepExpression(const QString str, QString *denominator, QString *Molecular)
+{
 
 }
