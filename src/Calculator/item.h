@@ -9,14 +9,13 @@
 class Item;
 
 enum MathSymbolType {
-    NUMBER				= 0,
-    ADDITION			= 1,	// +
-    SUBTRACTION         = 2,	// -
-    MULTIPLICATION		= 3,	// *
-    DIVISIONMETHOD		= 4,	// /
-    EXPONENTIATION		= 5,	// ^
-    PI					= 6,	// 圆周率
-    EXP					= 7,	// e
+    PI,                     // 圆周率
+    EXP,                    // e
+    ALPHA,                  // 字母包含系数 不包含带下标的字母
+    NUMBER,                 // 纯number
+    EXPONENTIATION,         // 带下标的没有幂的字母 ^
+    EXPONENTIATIONSUBSCRIPT,// 带下标的有幂的字母 ^
+    NUMBERMIXALPHASUBSCRIPT,// 带下标的字母
 };
 
 /* 单项式 */
