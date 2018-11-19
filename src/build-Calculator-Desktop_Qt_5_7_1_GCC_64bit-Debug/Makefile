@@ -52,7 +52,9 @@ SOURCES       = ../Calculator/main.cpp \
 		../Calculator/calculator.cpp \
 		../Calculator/transform.cpp \
 		../Calculator/item.cpp \
-		../Calculator/separation.cpp qrc_images.cpp \
+		../Calculator/separation.cpp \
+		../Calculator/cell.cpp \
+		../Calculator/itemlist.cpp qrc_images.cpp \
 		moc_calculator.cpp \
 		moc_transform.cpp
 OBJECTS       = main.o \
@@ -60,6 +62,8 @@ OBJECTS       = main.o \
 		transform.o \
 		item.o \
 		separation.o \
+		cell.o \
+		itemlist.o \
 		qrc_images.o \
 		moc_calculator.o \
 		moc_transform.o
@@ -216,11 +220,15 @@ DIST          = /home/ljl/Qt5.7.1/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../Calculator/Calculator.pro ../Calculator/calculator.h \
 		../Calculator/transform.h \
 		../Calculator/item.h \
-		../Calculator/separation.h ../Calculator/main.cpp \
+		../Calculator/separation.h \
+		../Calculator/itemlist.h \
+		../Calculator/cell.h ../Calculator/main.cpp \
 		../Calculator/calculator.cpp \
 		../Calculator/transform.cpp \
 		../Calculator/item.cpp \
-		../Calculator/separation.cpp
+		../Calculator/separation.cpp \
+		../Calculator/cell.cpp \
+		../Calculator/itemlist.cpp
 QMAKE_TARGET  = Calculator
 DESTDIR       = 
 TARGET        = Calculator
@@ -558,8 +566,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../Calculator/data/images.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../Calculator/calculator.h ../Calculator/transform.h ../Calculator/item.h ../Calculator/separation.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Calculator/main.cpp ../Calculator/calculator.cpp ../Calculator/transform.cpp ../Calculator/item.cpp ../Calculator/separation.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Calculator/calculator.h ../Calculator/transform.h ../Calculator/item.h ../Calculator/separation.h ../Calculator/itemlist.h ../Calculator/cell.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Calculator/main.cpp ../Calculator/calculator.cpp ../Calculator/transform.cpp ../Calculator/item.cpp ../Calculator/separation.cpp ../Calculator/cell.cpp ../Calculator/itemlist.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Calculator/calculator.ui $(DISTDIR)/
 
 
@@ -1117,50 +1125,7 @@ transform.o: ../Calculator/transform.cpp ../Calculator/transform.h \
 		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/QString
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o transform.o ../Calculator/transform.cpp
 
-item.o: ../Calculator/item.cpp ../Calculator/item.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/QList \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qlist.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qalgorithms.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qglobal.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qconfig.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qfeatures.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qsystemdetection.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qprocessordetection.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qtypeinfo.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qtypetraits.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qisenum.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qsysinfo.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qlogging.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qflags.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qbasicatomic.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qgenericatomic.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qglobalstatic.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qmutex.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qnumeric.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qversiontagging.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qiterator.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qrefcount.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qarraydata.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qhashfunctions.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qchar.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qpair.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qbytearraylist.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qbytearray.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qnamespace.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qstring.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qstringbuilder.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qstringlist.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qregexp.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qstringmatcher.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/QVector \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qvector.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qpoint.h \
-		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/QString
+item.o: ../Calculator/item.cpp ../Calculator/item.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o item.o ../Calculator/item.cpp
 
 separation.o: ../Calculator/separation.cpp ../Calculator/separation.h \
@@ -1195,6 +1160,12 @@ separation.o: ../Calculator/separation.cpp ../Calculator/separation.h \
 		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qarraydata.h \
 		/home/ljl/Qt5.7.1/5.7/gcc_64/include/QtCore/qstringbuilder.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o separation.o ../Calculator/separation.cpp
+
+cell.o: ../Calculator/cell.cpp ../Calculator/cell.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o cell.o ../Calculator/cell.cpp
+
+itemlist.o: ../Calculator/itemlist.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o itemlist.o ../Calculator/itemlist.cpp
 
 qrc_images.o: qrc_images.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_images.o qrc_images.cpp

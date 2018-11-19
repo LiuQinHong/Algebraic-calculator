@@ -1,41 +1,50 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-#include <QList>
-#include <QVector>
-#include <QString>
-
+#include <iostream>
+#include <list>
+#include <vector>
+#include <sstream>
+#include <ctype.h>
+#include <stdlib.h>
+#include <stdexcept>
+#include <string.h>
+#include <cell.h>
 
 class Item;
 
-enum MathSymbolType {
-    PI,                     // 圆周率
-    EXP,                    // e
-    ALPHA,                  // 字母包含系数 不包含带下标的字母
-    NUMBER,                 // 纯number
-    EXPONENTIATION,         // 带下标的没有幂的字母 ^
-    EXPONENTIATIONSUBSCRIPT,// 带下标的有幂的字母 ^
-    NUMBERMIXALPHASUBSCRIPT,// 带下标的字母
+/* 单项式类型 */
+enum ItemType {
+    SIMPLENUMBER,		//纯数字，例如：+123, 这种情况不支持 class cell 接口，请不要使用clss cell
+    SIMPLEALPHA,		//纯字母，例如：-abc
+    MIX,				//混合，	 例如：+3piexpab[0]c^2
 };
 
 /* 单项式 */
 class Item {
 public:
-    QString mStrItem;
-    enum MathSymbolType mType;//单项式类型
+    std::string mStrItem;
+    std::list<Cell*> mCellList;
+    enum ItemType mType;//单项式类型
 
     /* 目前只实现一种赋值方法,有需要可以加实现方法 */
-    Item();
-    Item(QString& strItem, enum MathSymbolType type):mStrItem(strItem),mType(type){}
+    Item(){};
+    Item(const std::string& strItem);
+    Item(const std::string& strItem, enum ItemType type):mStrItem(strItem),mType(type){}
+
+    void addCell(Cell* cell);
+    void delCell(Cell* cell);
+
+    bool isSimpleNumber(std::string str);
+    bool isSimpleAlpha(std::string str);
+    bool isMix(std::string str);
+
+    void parseItemToCell(std::string& strItem);
+    int stringSplit(std::vector<std::string>& dst, const std::string& src, const std::string& separator);
+
+
+    void printAllCell(void);
 };
 
-/* 单项式链表 */
-class ItemList {
-public:
-    QList<Item*> mItemList;
-    void addItem(Item* item);
-    void delItem(Item* item);
-
-};
 
 #endif // ITEM_H

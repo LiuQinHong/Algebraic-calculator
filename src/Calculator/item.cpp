@@ -1,16 +1,156 @@
 #include <item.h>
 
-
-/* 添加一个item到链表末尾 */
-void ItemList::addItem(Item *item)
+/*
+ *  单项式单元实现方法
+*/
+Item::Item(const std::string& strItem)
+    :mStrItem(strItem)
 {
-    mItemList.push_back(item);
+
+
+    if(isSimpleNumber(strItem)) {
+        mType = SIMPLENUMBER;
+        goto done;
+    }
+
+    if(isSimpleAlpha(strItem)) {
+        mType = SIMPLEALPHA;
+        goto done;
+    }
+
+    if(isMix(strItem)) {
+        mType = MIX;
+        goto done;
+    }
+
+
+done:
+
+    switch (mType) {
+        case SIMPLEALPHA :
+        case MIX:
+        {
+            parseItemToCell(mStrItem);
+            break;
+        }
+        default:
+        {
+            break;
+        }
+    }
 }
 
-/* 从链表中删除一个item */
-void ItemList::delItem(Item *item)
+
+void Item::addCell(Cell* cell)
 {
-    mItemList.removeOne(item);
-    delete item;
+    mCellList.push_back(cell);
 }
 
+void Item::delCell(Cell* cell)
+{
+    mCellList.remove(cell);
+    delete cell;
+}
+
+
+
+bool Item::isSimpleNumber(std::string str)
+{
+    for(int i = 0;i < str.size(); i++) {
+        if ((str.at(i) == '+') || str.at(i) == '-')
+            continue;
+
+        if (!isdigit(str.at(i))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool Item::isSimpleAlpha(std::string str)
+{
+    for(int i = 0;i < str.size(); i++) {
+        if ((str.at(i) == '+') || str.at(i) == '-')
+            continue;
+
+        if (!isalpha(str.at(i))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+bool Item::isMix(std::string str)
+{
+    if (isSimpleNumber(str) || isSimpleAlpha(str))
+        return false;
+
+    return true;
+}
+
+
+/* strItem = +3*pi*exp*a*b[0]*c^2*pi[0]*exp[0]*exp[0]^2 */
+void Item::parseItemToCell(std::string& strItem)
+{
+    int iPosStart = 0;
+    int iPosEnd = 0;
+    std::string tmpStr = strItem;
+
+    if ((strItem.at(0) == '+') || strItem.at(0) == '-')
+        tmpStr = strItem.substr(1);
+
+    if (tmpStr.empty())
+        return;
+
+    while (1) {
+        iPosEnd = tmpStr.find('*', iPosStart);
+        if (iPosEnd < 0)
+            break;
+
+        std::string subStr = tmpStr.substr(iPosStart, iPosEnd - iPosStart);
+        Cell *cell = new Cell(subStr);
+        addCell(cell);
+
+        iPosEnd++;
+        iPosStart = iPosEnd;
+    }
+
+    std::string subStr = tmpStr.substr(iPosStart);
+    Cell *cell = new Cell(subStr);
+    addCell(cell);
+
+}
+
+
+int Item::stringSplit(std::vector<std::string>& dst, const std::string& src, const std::string& separator)
+{
+    if (src.empty() || separator.empty())
+        return 0;
+
+    int iCount = 0;
+    char *p = NULL;
+    std::string tmpStr;
+
+    p = strtok((char *)src.c_str(), separator.c_str());
+    tmpStr = p;
+
+    while(p) {
+            tmpStr = p;
+            dst.push_back(tmpStr);
+            iCount++;
+            p = strtok(NULL, separator.c_str());
+    }
+
+    return iCount;
+}
+
+
+
+void Item::printAllCell(void)
+{
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        std::cout << (*celllist_iter)->mStrCell << ":" << (*celllist_iter)->mCellType << std::endl;
+    }
+}

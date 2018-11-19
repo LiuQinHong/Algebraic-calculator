@@ -27,12 +27,16 @@ SOURCES += main.cpp\
         calculator.cpp \
     transform.cpp \
     item.cpp \
-    separation.cpp
+    separation.cpp \
+    cell.cpp \
+    itemlist.cpp
 
 HEADERS  += calculator.h \
     transform.h \
     item.h \
-    separation.h
+    separation.h \
+    itemlist.h \
+    cell.h
 
 FORMS    += calculator.ui
 
