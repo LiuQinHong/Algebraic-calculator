@@ -2,8 +2,11 @@
 #define ITEMLIST_H
 
 #include <string>
+#include <list>
+#include <vector>
 #include <iostream>
 #include <stdlib.h>
+#include <item.h>
 
 /* 单项式链表 */
 class ItemList {
