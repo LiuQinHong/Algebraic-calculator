@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     int aa = -1;
     int b = -2;
     int i = 0,k,res = -1;
-    ItemList testList("123-456+678+abc+111+aaa+222+333");
+    ItemList testList("123-456+678+a*b*c+111+a*3*a*a+222+333+a*a*a+b*a^2+33");
 
     bool flag = true;
 
@@ -55,10 +55,15 @@ int main(int argc, char *argv[])
         qDebug() << "finaly str = " << (*itemlist_iter)->mStrItem.c_str();
     }
 
-
-
+    int cof = 0;
+    Item item("+2*a*3*b*4*c*a^2");
+    Item nextItem("+2*a*3*b*4*c*a^2");
+    /*extractItemcoef(item,nextItem,cof);*/
+    std::string hell("+hellp");
     //int res = judgeItems(origItem,newItem);
-
+    //hell.erase(hell.begin()+1,hell.end());
+    hell.insert(1,"12");
+    qDebug() << "mStrItem" << hell.c_str();
     int &cc = aa;
     cc = 10;
 

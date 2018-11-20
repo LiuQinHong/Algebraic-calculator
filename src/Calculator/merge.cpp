@@ -44,7 +44,7 @@ int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>
 {
     int res = -1;
     int itemp = 0,jtemp = 0;
-     std::stringstream ss;
+    std::stringstream ss;
 
     res = judgeItem(origItem,newItem);
     if(res == NUMBERFLAG){/* 如果相同且为整数 */
@@ -67,6 +67,7 @@ int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>
             jstr.erase(0,1);
             jtemp = atoi(jstr.c_str());
         }
+
         //合并求值并送到origItem,也就是每一次循环的首项,直接覆盖
         int sumtemp = (itemp)+(jtemp);
         ss << sumtemp;
@@ -74,6 +75,7 @@ int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>
         if(sumtemp > 0){
             istr.insert(0,"+");
         }
+
         origItem.mStrItem = istr;
         if(*iter)
             itemList->mItemList.erase(iter++);
@@ -83,6 +85,21 @@ int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>
 
         return NUMBERFLAG;
     }else if(res == ALPHAFLAG){
+
+        int cof = 0;
+        std::string cofStr;
+        cof = extractItemcoef(origItem,newItem);
+
+        ss.clear();
+        ss << cof;
+        ss >> cofStr;
+
+        origItem.mStrItem.insert(1,cofStr);
+
+        if(*iter)
+            itemList->mItemList.erase(iter++);
+        if(iter != itemList->mItemList.end())
+            judgeItems(origItem,(*(*iter)),itemList,iter);
 
         return ALPHAFLAG;
     }else {
@@ -104,6 +121,7 @@ int judgeItem(Item &origItem, Item &newItem)
         if(origItem.mType == SIMPLENUMBER){
             return NUMBERFLAG;
         }else {
+            extractItemcoef(origitemTemp,newtemTemp);
             sort(origitemTemp.mStrItem.begin(),origitemTemp.mStrItem.end());
             sort(newtemTemp.mStrItem.begin(),newtemTemp.mStrItem.end());
             if(origitemTemp.mStrItem.compare(newtemTemp.mStrItem) == 0)
@@ -117,32 +135,44 @@ int judgeItem(Item &origItem, Item &newItem)
 }
 
 /********************************************
- * Funtion : 提取单项式系数
- * @item   : 单项式
+ * Funtion    : 提取单项式系数
+ * @origItem  : 单项式
+ * @nextItem  : 单项式
+ * return     : 系数
 *********************************************/
-int extractItemcoefficient(Item &item)
+int extractItemcoef(Item &origItem,Item &nextItem)
 {
+    int cof = 0;
+    int cofTemp = 0;
+    //遍历Cell链表提取系数
+    for(std::list<Cell*>::iterator origList_iter = origItem.mCellList.begin();
+        origList_iter!= origItem.mCellList.end(); ++origList_iter){
+        if((*origList_iter)->mCellType == NUMBER){
+            cof += atoi((*origList_iter)->mStrCell.c_str());
+            if(*origList_iter)
+                origItem.mCellList.erase(origList_iter++);
+        }
+    }
+    origItem.parseCelltoItem();
 
-         std::list<Cell*>::iterator listCell_iter = item.mCellList.begin();
-         flag = true;
+    if(cof == 0)
+        cof = 1;
+    cofTemp = cof;
 
-         for(std::list<Cell*>::iterator nextList_iter = item.mCellList.begin();
-             nextList_iter!= item.mCellList.end(); ++nextList_iter){
-             if(flag){
-                 i = j+1;
-                 while(i--)
-                     ++nextList_iter;
-                 if(nextList_iter == testList.mItemList.end())
-                     break;
-             }
+    for(std::list<Cell*>::iterator nextList_iter = nextItem.mCellList.begin();
+        nextList_iter!= nextItem.mCellList.end(); ++nextList_iter){
+        if((*nextList_iter)->mCellType == NUMBER){
+            cof += atoi((*nextList_iter)->mStrCell.c_str());
+            if(*nextList_iter)
+                nextItem.mCellList.erase(nextList_iter++);
+        }
+    }
+    nextItem.parseCelltoItem();
 
-             res = judgeItems((*(*itemlist_iter)),(*(*nextList_iter)),&testList,nextList_iter);
-             if(nextList_iter == testList.mItemList.end())
-                 --nextList_iter;
+    if(cof == cofTemp)
+        ++cof;
 
-             flag = false;
-
-         }
+    return cof;
 }
 
 /********************************************
@@ -150,7 +180,7 @@ int extractItemcoefficient(Item &item)
  * @origCell : 所要判断的单元
  * @newCell  : 所要判断的单元
 *********************************************/
-int judgeCell(Cell &cell)
+int judgeCells(Cell &cell,Item &item,std::list<Cell*>::iterator &iter,int &coef)
 {
-    if(cell.isNumber())
+
 }

@@ -42,6 +42,8 @@ public:
     void parseItemToCell(std::string& strItem);
     int stringSplit(std::vector<std::string>& dst, const std::string& src, const std::string& separator);
 
+    void parseCelltoItem();
+
 
     void printAllCell(void);
 };

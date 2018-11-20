@@ -14,7 +14,7 @@ enum ItemFlag {
 int mergeItem(ItemList* itemList);
 int judgeItem(Item& origItem, Item& newItem);
 int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>::iterator &iter);
-int extractItemcoefficient(Item &item);
-int judgeCell(Cell &cell);
+int extractItemcoef(Item &origItem,Item &nextItem);
+//int judgeCells(Cell &Cell,Item &item,std::list<Cell*>::iterator &iter,int &coef);
 
 #endif // MERGE_H

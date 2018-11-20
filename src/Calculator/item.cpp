@@ -146,6 +146,19 @@ int Item::stringSplit(std::vector<std::string>& dst, const std::string& src, con
     return iCount;
 }
 
+void Item::parseCelltoItem()
+{
+    std::list<Cell*>::iterator temp_iter;
+    mStrItem.erase(mStrItem.begin()+1,mStrItem.end());
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        temp_iter = celllist_iter;
+        ++temp_iter;
+        mStrItem.append((*celllist_iter)->mStrCell);
+        if(temp_iter != mCellList.end())
+            mStrItem.append("*");
+    }
+}
+
 
 
 void Item::printAllCell(void)
