@@ -41,7 +41,7 @@ int mergeItem(ItemList *itemList)
         }
     }
 
-    delItemzero(itemList);
+    makeItem(itemListTemp_i);
 
     qDebug() << "for over";
     for(std::list<Item*>::iterator itemlist_iter = itemListTemp_i->mItemList.begin();
@@ -114,13 +114,9 @@ int judgeItems(Item& origItem, Item& newItem,ItemList* itemList,std::list<Item*>
         ss.clear();
         ss << cof;
         ss >> cofStr;
-        cofStr.append("*");
-        if(cofStr.at(0) == '-'){
-            origItem.mStrItem.erase(0,1);
-            origItem.mStrItem.insert(0,cofStr);
-        }
-        else
-            origItem.mStrItem.insert(1,cofStr);
+        qDebug() << "cofStr = " << cofStr.c_str();
+        restoreCellLsist(origItem,cofStr);
+
         qDebug() << "iter = " << *iter;
 
         if(*iter)
@@ -148,16 +144,19 @@ int judgeItem(Item& origItem, Item& newItem)
 {
     Item origitemTemp = origItem;
     Item newtemTemp = newItem;
+    qDebug() << "origitemTemp = " << origitemTemp.mStrItem.c_str();
+    qDebug() << "newtemTemp = " << newtemTemp.mStrItem.c_str();
 
-    //去掉符号,否则会影响排序结果,临时Item,不会对原Item修改
-    origitemTemp.mStrItem.erase(0,1);
-    newtemTemp.mStrItem.erase(0,1);
 
     if(origItem.mType == newItem.mType){
         if(origItem.mType == SIMPLENUMBER){
             return NUMBERFLAG;
         }else {
-            extractItemcoef(origitemTemp,newtemTemp);//排序前去掉系数,否则会影响判断
+            extractItemcoeff(origitemTemp,newtemTemp);//排序前去掉系数,否则会影响判断
+            origitemTemp.mStrItem.erase(0,1);//去掉符号,否则会影响排序结果,临时Item,不会对原Item修改
+            newtemTemp.mStrItem.erase(0,1);
+            qDebug() << "origitemTemp1 = " << origitemTemp.mStrItem.c_str();
+            qDebug() << "newtemTemp1 = " << newtemTemp.mStrItem.c_str();
             sort(origitemTemp.mStrItem.begin(),origitemTemp.mStrItem.end());
             sort(newtemTemp.mStrItem.begin(),newtemTemp.mStrItem.end());
             if(origitemTemp.mStrItem.compare(newtemTemp.mStrItem) == 0)
@@ -178,9 +177,87 @@ int judgeItem(Item& origItem, Item& newItem)
 *********************************************/
 int extractItemcoef(Item &origItem,Item &nextItem)
 {
-    int origCof = 0,nextCof;
+    int origCoef = 0,nextCoef = 0;
+    bool oneCoefFlag = false;
 
     //遍历Cell链表提取系数
+    for(std::list<Cell*>::iterator origList_iter = origItem.mCellList.begin();
+        origList_iter!= origItem.mCellList.end(); ++origList_iter){
+        if((*origList_iter)->mCellType == NUMBER){
+            origCoef += atoi((*origList_iter)->mStrCell.c_str());
+            if(*origList_iter)
+                origItem.mCellList.erase(origList_iter++);
+            oneCoefFlag = true;
+        }
+    }
+    origItem.parseCelltoItem();
+    qDebug() << "after parseCelltoItem and delcoef origItem = " << origItem.mStrItem.c_str();
+    if(!oneCoefFlag)
+        origCoef = 1;
+    if(origItem.mStrItem.at(0) == '-')
+        origCoef = -origCoef;
+    oneCoefFlag = false;
+
+    for(std::list<Cell*>::iterator nextList_iter = nextItem.mCellList.begin();
+        nextList_iter!= nextItem.mCellList.end(); ++nextList_iter){
+        if((*nextList_iter)->mCellType == NUMBER){
+            nextCoef += atoi((*nextList_iter)->mStrCell.c_str());
+            if(*nextList_iter)
+                nextItem.mCellList.erase(nextList_iter++);
+            oneCoefFlag = true;
+        }
+    }
+    nextItem.parseCelltoItem();
+    qDebug() << "after parseCelltoItem and delcoef nextItem = " << nextItem.mStrItem.c_str();
+
+    if(!oneCoefFlag)
+        nextCoef = 1;
+    if(nextItem.mStrItem.at(0) == '-')
+        nextCoef = -nextCoef;
+
+    return (origCoef)+(nextCoef);
+}
+
+/********************************************
+ * Funtion   : 剔除系数为1的单项式系数
+ * @itemList : 单项式链表
+*********************************************/
+void makeItem(ItemList *itemList)
+{
+    delItemZero(itemList);
+}
+
+/********************************************
+ * Funtion   : 处理系数并恢复cell链表
+ * @origItem : 单项式
+ * @cofStr   : 系数
+*********************************************/
+void restoreCellLsist(Item &origItem, std::__cxx11::string &cofStr)
+{
+    std::string cofStrTemp = cofStr;
+    cofStrTemp.erase(0,1);
+    //Cell cofCell(cofStrTemp);
+    cofStr.append("*");
+    if(cofStr.at(0) == '-'){
+        origItem.mStrItem.erase(0,1);
+        origItem.mStrItem.insert(0,cofStr);
+    }
+    else{
+        origItem.mStrItem.replace(0,1,"+");
+        origItem.mStrItem.insert(1,cofStr);
+    }
+    //origItem.mCellList.push_front(&cofCell);
+    origItem.delAllCell();
+    origItem.parseItemToCell(origItem.mStrItem);
+    for(std::list<Cell*>::iterator celllist_iter = origItem.mCellList.begin(); celllist_iter!= origItem.mCellList.end(); ++celllist_iter) {
+        qDebug() << (*celllist_iter)->mStrCell.c_str() << ":" << (*celllist_iter)->mCellType;
+    }
+}
+
+int extractItemcoeff(Item &origItem, Item &nextItem)
+{
+    int origCof = 0,nextCof;
+    qDebug() << "enter coeff";
     for(std::list<Cell*>::iterator origList_iter = origItem.mCellList.begin();
         origList_iter!= origItem.mCellList.end(); ++origList_iter){
         if((*origList_iter)->mCellType == NUMBER){
@@ -191,11 +268,6 @@ int extractItemcoef(Item &origItem,Item &nextItem)
     }
     origItem.parseCelltoItem();
 
-    if(origCof == 0)
-        origCof = 1;
-    if(origItem.mStrItem.at(0) == '-')
-        origCof = -origCof;
-
     for(std::list<Cell*>::iterator nextList_iter = nextItem.mCellList.begin();
         nextList_iter!= nextItem.mCellList.end(); ++nextList_iter){
         if((*nextList_iter)->mCellType == NUMBER){
@@ -205,20 +277,10 @@ int extractItemcoef(Item &origItem,Item &nextItem)
         }
     }
     nextItem.parseCelltoItem();
-
-    if(nextCof == 0)
-        nextCof = 1;
-    if(nextItem.mStrItem.at(0) == '-')
-        nextCof = -nextCof;
-
-    return (origCof)+(nextCof);
+    qDebug() << "exit coeff";
 }
 
-/********************************************
- * Funtion   : 删除系数为0的项
- * @itemList : 单项式链表
-*********************************************/
-void delItemzero(ItemList *itemList)
+void delItemZero(ItemList *itemList)
 {
     for(std::list<Item*>::iterator itemList_iter = itemList->mItemList.begin();
         itemList_iter!= itemList->mItemList.end(); ++itemList_iter){
@@ -227,23 +289,20 @@ void delItemzero(ItemList *itemList)
             qDebug() << "at(1) == " << (*itemList_iter)->mStrItem.c_str();
             itemList->mItemList.erase(itemList_iter++);
         }
+        eraseItemOne((*(*itemList_iter)));
     }
 }
 
-/********************************************
- * Funtion   : 处理系数并恢复cell链表
- * @origItem : 单项式
- * @cofStr   : 系数
-*********************************************/
-void restoreCellLsist(Item &origItem, std::__cxx11::string &cofStr)
+void eraseItemOne(Item &item)
 {
-    Cell cofCell(cofStr);
-    cofStr.append("*");
-    if(cofStr.at(0) == '-'){
-        origItem.mStrItem.erase(0,1);
-        origItem.mStrItem.insert(0,cofStr);
+    bool flag = false;
+    for(std::list<Cell*>::iterator celllist_iter = item.mCellList.begin(); celllist_iter!= item.mCellList.end(); ++celllist_iter) {
+        if(((*celllist_iter)->mStrCell == "1") && (item.mType != SIMPLENUMBER)){
+            item.mCellList.erase(celllist_iter++);
+            flag = true;
+        }
     }
-    else
-        origItem.mStrItem.insert(1,cofStr);
-    origItem.printAllCell();
+    if(flag)
+        item.parseCelltoItem();
+
 }

@@ -15,7 +15,10 @@ int mergeItem(ItemList* itemList);
 int judgeItem(Item& origItem, Item& newItem);
 int judgeItems(Item& origItem, Item& newItem,ItemList* itemList,std::list<Item*>::iterator& iter);
 int extractItemcoef(Item& origItem,Item& nextItem);
-void delItemzero(ItemList* itemList);
+int extractItemcoeff(Item& origItem,Item& nextItem);
+void makeItem(ItemList* itemList);
+void delItemZero(ItemList* itemList);
+void eraseItemOne(Item& item);
 void restoreCellLsist(Item &origItem,std::string &cofStr);
 
 #endif // MERGE_H
