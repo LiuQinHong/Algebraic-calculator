@@ -45,6 +45,7 @@ public:
 
     void parseCelltoItem();
     void exponentUnfold(void);
+    void exponentFold(void);
 
     void updateFromAllCell(void);
     void printAllCell(void);

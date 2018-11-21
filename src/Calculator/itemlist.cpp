@@ -53,8 +53,9 @@ void ItemList::delItem(Item *item)
 void ItemList::delAllItem(void)
 {
     for(std::list<Item*>::iterator itemlist_iter = mItemList.begin(); itemlist_iter!= mItemList.end(); ++itemlist_iter) {
-        delItem((*itemlist_iter));
+        delete (*itemlist_iter);
     }
+    mItemList.clear();
 }
 
 

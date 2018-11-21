@@ -329,8 +329,8 @@ std::string Cell::getExponent()
     if (iPosEnd < 0)
         return "\0";
 
-
-    return mStrCell.substr(iPosStart + 1, iPosEnd - iPosStart);
+    iPosStart += 1;
+    return mStrCell.substr(iPosStart, iPosEnd - iPosStart);
 }
 
 /* a[123] exp[123] pi[123]^(123) */
@@ -347,7 +347,8 @@ std::string Cell::getSubscript()
     if (iPosEnd < 0)
         return "\0";
 
-    return mStrCell.substr(iPosStart+1, iPosEnd - iPosStart);
+    iPosStart += 1;
+    return mStrCell.substr(iPosStart, iPosEnd - iPosStart);
 }
 
 /* pi^12 */

@@ -3,7 +3,7 @@
 
 #include <string>
 
-/* +1*a*exp*pi*a[0]*exp[0]*pi[0]*a^2*exp^2*pi^2*a[0]^2*exp[0]^2*pi[0]^2 */
+/* +1*a*exp*pi*a[0]*exp[0]*pi[0]*1^a*a^2*exp^2*pi^2*a[0]^2*exp[0]^2*pi[0]^2 */
 enum CellType {
     NUMBER,								// 数字 : 1
     ALPHA,								// 字母 : a

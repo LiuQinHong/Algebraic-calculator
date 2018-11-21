@@ -8,36 +8,15 @@ Item::Item(const std::string& strItem)
 {
 
 
-    if(isSimpleNumber(strItem)) {
+
+    if(isSimpleNumber(mStrItem))
         mType = SIMPLENUMBER;
-        goto done;
-    }
-
-    if(isSimpleAlpha(strItem)) {
+    else if(isSimpleAlpha(mStrItem))
         mType = SIMPLEALPHA;
-        goto done;
-    }
-
-    if(isMix(strItem)) {
+    else if(isMix(mStrItem))
         mType = MIX;
-        goto done;
-    }
 
-
-done:
-
-    switch (mType) {
-        case SIMPLEALPHA :
-        case MIX:
-        {
-            parseItemToCell(mStrItem);
-            break;
-        }
-        default:
-        {
-            break;
-        }
-    }
+    parseItemToCell(mStrItem);
 }
 
 
@@ -55,14 +34,15 @@ void Item::delCell(Cell* cell)
 void Item::delAllCell()
 {
     for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
-        delCell((*celllist_iter));
+        delete (*celllist_iter);
     }
+    mCellList.clear();
 }
 
 bool Item::isSimpleNumber(std::string str)
 {
     for(size_t i = 0;i < str.size(); i++) {
-        if ((str.at(i) == '+') || str.at(i) == '-')
+        if ((str.at(i) == '+') || str.at(i) == '-' || str.at(i) == '*')
             continue;
 
         if (!isdigit(str.at(i))) {
@@ -72,14 +52,14 @@ bool Item::isSimpleNumber(std::string str)
     return true;
 }
 
-
+/* a*b or 2*a*b */
 bool Item::isSimpleAlpha(std::string str)
 {
-    for(size_t i = 0;i < str.size(); i++) {
-        if ((str.at(i) == '+') || str.at(i) == '-')
+    for(size_t i = 0; i < str.size(); i++) {
+        if ((str.at(i) == '+') || str.at(i) == '-' || str.at(i) == '*')
             continue;
 
-        if (!isalpha(str.at(i))) {
+        if (!isalpha(str.at(i)) && !isdigit(str.at(i))) {
             return false;
         }
     }
@@ -115,6 +95,13 @@ void Item::parseItemToCell(std::string& strItem)
             break;
 
         std::string subStr = tmpStr.substr(iPosStart, iPosEnd - iPosStart);
+        if (subStr == "1") {
+            iPosEnd++;
+            iPosStart = iPosEnd;
+            continue;
+        }
+
+
         Cell *cell = new Cell(subStr);
         addCell(cell);
 
@@ -123,6 +110,9 @@ void Item::parseItemToCell(std::string& strItem)
     }
 
     std::string subStr = tmpStr.substr(iPosStart);
+    if (subStr == "1")
+        return;
+
     Cell *cell = new Cell(subStr);
     addCell(cell);
 
@@ -165,8 +155,52 @@ void Item::parseCelltoItem()
     }
 }
 
-/* exp[0]^(12)*a^(12)*a^(1/2) */
+/* a^2 ---> a*a */
+/* exp[123]^(3)*pi[123]^(2)*a^(2)*2^(3) */
 void Item::exponentUnfold(void)
+{
+    std::string tmpStr;
+    std::string subStr;
+    int iCount = 0;
+
+
+    tmpStr = mStrItem.at(0);
+
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        int iPos = (*celllist_iter)->mStrCell.find("^");
+        if (iPos < 0) {
+            tmpStr += (*celllist_iter)->mStrCell;
+            tmpStr += "*";
+            continue;
+        }
+
+
+        subStr = (*celllist_iter)->mStrCell.substr(0, iPos);
+        if (!(*celllist_iter)->isNumber((*celllist_iter)->getExponent())) {
+            tmpStr += (*celllist_iter)->mStrCell;
+            tmpStr += "*";
+            continue;
+        }
+
+        std::stringstream stream;
+        stream << (*celllist_iter)->getExponent();
+        stream >> iCount;
+
+        for (int i = 0; i < iCount; i++) {
+            tmpStr += subStr;
+            tmpStr += "*";
+        }
+    }
+
+    tmpStr.pop_back();
+    mStrItem = tmpStr;
+
+    delAllCell();
+    parseItemToCell(mStrItem);
+}
+
+/* a*a ---> a^2 */
+void exponentFold(void)
 {
 
 }
