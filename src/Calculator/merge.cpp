@@ -86,7 +86,7 @@ int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>
         return NUMBERFLAG;
     }else if(res == ALPHAFLAG){
 
-        int cof = 0;
+        /*int cof = 0;
         std::string cofStr;
         cof = extractItemcoef(origItem,newItem);
 
@@ -99,7 +99,7 @@ int judgeItems(Item &origItem, Item &newItem,ItemList *itemList,std::list<Item*>
         if(*iter)
             itemList->mItemList.erase(iter++);
         if(iter != itemList->mItemList.end())
-            judgeItems(origItem,(*(*iter)),itemList,iter);
+            judgeItems(origItem,(*(*iter)),itemList,iter);*/
 
         return ALPHAFLAG;
     }else {
@@ -116,12 +116,15 @@ int judgeItem(Item &origItem, Item &newItem)
 {
     Item origitemTemp = origItem;
     Item newtemTemp = newItem;
+    //qDebug() << " judge origitemTemp.mStrItem = " << origitemTemp.mStrItem.c_str();
+    origitemTemp.mStrItem.erase(0,1);
+    newItem.mStrItem.erase(0,1);
 
     if(origItem.mType == newItem.mType){
         if(origItem.mType == SIMPLENUMBER){
             return NUMBERFLAG;
         }else {
-            extractItemcoef(origitemTemp,newtemTemp);
+            //extractItemcoef(origitemTemp,newtemTemp);
             sort(origitemTemp.mStrItem.begin(),origitemTemp.mStrItem.end());
             sort(newtemTemp.mStrItem.begin(),newtemTemp.mStrItem.end());
             if(origitemTemp.mStrItem.compare(newtemTemp.mStrItem) == 0)
@@ -142,37 +145,40 @@ int judgeItem(Item &origItem, Item &newItem)
 *********************************************/
 int extractItemcoef(Item &origItem,Item &nextItem)
 {
-    int cof = 0;
-    int cofTemp = 0;
+    int origCof = 0,nextCof;
+
     //遍历Cell链表提取系数
     for(std::list<Cell*>::iterator origList_iter = origItem.mCellList.begin();
         origList_iter!= origItem.mCellList.end(); ++origList_iter){
         if((*origList_iter)->mCellType == NUMBER){
-            cof += atoi((*origList_iter)->mStrCell.c_str());
+            origCof += atoi((*origList_iter)->mStrCell.c_str());
             if(*origList_iter)
                 origItem.mCellList.erase(origList_iter++);
         }
     }
     origItem.parseCelltoItem();
 
-    if(cof == 0)
-        cof = 1;
-    cofTemp = cof;
+    if(origCof == 0)
+        origCof = 1;
+    if(origItem.mStrItem.at(0) == '-')
+        origCof = -origCof;
 
     for(std::list<Cell*>::iterator nextList_iter = nextItem.mCellList.begin();
         nextList_iter!= nextItem.mCellList.end(); ++nextList_iter){
         if((*nextList_iter)->mCellType == NUMBER){
-            cof += atoi((*nextList_iter)->mStrCell.c_str());
+            nextCof += atoi((*nextList_iter)->mStrCell.c_str());
             if(*nextList_iter)
                 nextItem.mCellList.erase(nextList_iter++);
         }
     }
     nextItem.parseCelltoItem();
 
-    if(cof == cofTemp)
-        ++cof;
+    if(nextCof == 0)
+        nextCof = 1;
+    if(nextItem.mStrItem.at(0) == '-')
+        nextCof = -nextCof;
 
-    return cof;
+    return (origCof)+(nextCof);
 }
 
 /********************************************
