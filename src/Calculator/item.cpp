@@ -200,9 +200,41 @@ void Item::exponentUnfold(void)
 }
 
 /* a*a ---> a^2 */
-void exponentFold(void)
+void Item::exponentFold(void)
 {
 
+}
+
+/* 8*9*b*h ---> 72*b*h */
+void Item::digitalMerge(void)
+{
+    std::string tmpStr;
+    std::string numStr;
+    std::stringstream numStream;
+    int iSum = 1;
+    int iNum = 1;
+
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        if ((*celllist_iter)->mCellType == NUMBER) {
+            std::stringstream strStream;
+            strStream << (*celllist_iter)->mStrCell;
+            strStream >> iNum;
+            iSum *= iNum;
+        }
+        else {
+            tmpStr += (*celllist_iter)->mStrCell;
+            tmpStr += "*";
+        }
+    }
+
+    numStream << iSum;
+    numStream >> numStr;
+    tmpStr = mStrItem.at(0) + numStr + "*" + tmpStr;
+    tmpStr.pop_back();
+
+    delAllCell();
+    mStrItem = tmpStr;
+    parseItemToCell(mStrItem);
 }
 
 void Item::updateFromAllCell(void)

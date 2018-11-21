@@ -11,6 +11,9 @@ ItemList::ItemList(const std::string &str)
 
     /* 去掉空格 */
     deleteAllMark(mExpressionStr, " ");
+    deleteAllMark(mExpressionStr, "\t");
+    deleteAllMark(mExpressionStr, "\r");
+    deleteAllMark(mExpressionStr, "\n");
 
 
     if ((mExpressionStr.at(0) != '+') &&  mExpressionStr.at(0) != '-') {
@@ -33,7 +36,8 @@ ItemList::ItemList(const std::string &str)
         addItem(item);
     }
 
-    updateFromAllCell();
+    updateFromAllItem();
+    digitalMergeAllItem();
 }
 
 
@@ -109,7 +113,13 @@ void ItemList::strReplace(std::string& str, const std::string& strsrc, const std
     }
 }
 
-
+void ItemList::digitalMergeAllItem(void)
+{
+    for(std::list<Item*>::iterator itemlist_iter = mItemList.begin(); itemlist_iter!= mItemList.end(); ++itemlist_iter) {
+        (*itemlist_iter)->digitalMerge();
+    }
+    updateFromAllItem();
+}
 
 void ItemList::printAllItem(void)
 {
@@ -120,11 +130,12 @@ void ItemList::printAllItem(void)
 }
 
 
-void ItemList::updateFromAllCell(void)
+void ItemList::updateFromAllItem(void)
 {
     std::string tmpStr;
 
     for(std::list<Item*>::iterator itemlist_iter = mItemList.begin(); itemlist_iter!= mItemList.end(); ++itemlist_iter) {
+        (*itemlist_iter)->updateFromAllCell();
         tmpStr += (*itemlist_iter)->mStrItem;
     }
 

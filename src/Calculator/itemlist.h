@@ -25,8 +25,9 @@ public:
     int stringSplit(std::vector<std::string>& dst, const std::string src, const std::string& separator);
     void strReplace(std::string& str, const std::string& strsrc, const std::string& strdst);
     void addParentheses(std::string& str);
+    void digitalMergeAllItem(void);
     void printAllItem(void);
-    void updateFromAllCell(void);
+    void updateFromAllItem(void);
 };
 
 #endif // ITEMLIST_H
