@@ -52,7 +52,7 @@ void Item::delCell(Cell* cell)
     delete cell;
 }
 
-void Item::delAllCell(Cell* cell)
+void Item::delAllCell()
 {
     for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
         delCell((*celllist_iter));
@@ -173,7 +173,9 @@ void Item::exponentUnfold(void)
 
 void Item::updateFromAllCell(void)
 {
-    std::string tmpStr = &mStrItem.at(0);
+    std::string tmpStr;
+
+    tmpStr = mStrItem.at(0);
 
     for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
         tmpStr += (*celllist_iter)->mStrCell;

@@ -3,7 +3,7 @@
 
 #include <string>
 
-// 1 a e pi b[0] 1^2 a^2 e^2 pi^2 b[0]^2
+/* +1*a*exp*pi*a[0]*exp[0]*pi[0]*a^2*exp^2*pi^2*a[0]^2*exp[0]^2*pi[0]^2 */
 enum CellType {
     NUMBER,								// 数字 : 1
     ALPHA,								// 字母 : a
@@ -14,6 +14,7 @@ enum CellType {
     NUMBERMIXEXPSUBSCRIPT,				// exp[0]
     NUMBERMIXPISUBSCRIPT,				// pi[0]
 
+    NUMBERWITHEXPONENT,					// 数字 : 1^2 or 1^a
     ALPHAWITHEXPONENT,					// 字母带幂 : a^2
     EXPWITHEXPONENT,					// exp带幂 : exp^2
     PIWITHEXPONENT,						// 圆周率带幂 ：pi^2
@@ -43,6 +44,7 @@ public:
     bool isNumberMixEXPSubscript(std::string str);
     bool isNumberMixPISubscript(std::string str);
 
+    bool isNumberWithExponent(std::string str);
     bool isAlphaWithExponent(std::string str);
     bool isExpWithExponent(std::string str);
     bool isPIwithExponent(std::string str);
@@ -52,6 +54,7 @@ public:
     bool isNumberMixPISubscriptWithExponent(std::string str);
 
     std::string getExponent();
+    std::string getSubscript();
 
     void addParentheses();
 };
