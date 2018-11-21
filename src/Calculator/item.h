@@ -34,6 +34,7 @@ public:
 
     void addCell(Cell* cell);
     void delCell(Cell* cell);
+    void delAllCell(Cell* cell);
 
     bool isSimpleNumber(std::string str);
     bool isSimpleAlpha(std::string str);
@@ -43,8 +44,9 @@ public:
     int stringSplit(std::vector<std::string>& dst, const std::string& src, const std::string& separator);
 
     void parseCelltoItem();
+    void exponentUnfold(void);
 
-
+    void updateFromAllCell(void);
     void printAllCell(void);
 };
 

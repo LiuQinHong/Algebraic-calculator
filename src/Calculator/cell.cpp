@@ -1,4 +1,5 @@
 #include <cell.h>
+#include <iostream>
 
 /* cell类实现方法 */
 
@@ -6,31 +7,34 @@
 Cell::Cell(const std::string& strCell)
     :mStrCell(strCell)
 {
-    if (isNumber(strCell))
+
+    addParentheses();
+
+    if (isNumber(mStrCell))
         mCellType = NUMBER;
-    else if (isAlpha(strCell))
+    else if (isAlpha(mStrCell))
         mCellType = ALPHA;
-    else if (isExp(strCell))
+    else if (isExp(mStrCell))
         mCellType = EXP;
-    else if (isPI(strCell))
+    else if (isPI(mStrCell))
         mCellType = PI;
-    else if (isNumberMixAlphaSubscript(strCell))
+    else if (isNumberMixAlphaSubscript(mStrCell))
         mCellType = NUMBERMIXALPHASUBSCRIPT;
-    else if (isNumberMixEXPSubscript(strCell))
+    else if (isNumberMixEXPSubscript(mStrCell))
         mCellType = NUMBERMIXEXPSUBSCRIPT;
-    else if (isNumberMixPISubscript(strCell))
+    else if (isNumberMixPISubscript(mStrCell))
         mCellType = NUMBERMIXPISUBSCRIPT;
-    else if (isAlphaWithExponent(strCell))
+    else if (isAlphaWithExponent(mStrCell))
         mCellType = ALPHAWITHEXPONENT;
-    else if (isExpWithExponent(strCell))
+    else if (isExpWithExponent(mStrCell))
         mCellType = EXPWITHEXPONENT;
-    else if (isPIwithExponent(strCell))
+    else if (isPIwithExponent(mStrCell))
         mCellType = PIWITHEXPONENT;
-    else if (isNumberMixAlphaSubscriptWithExponent(strCell))
+    else if (isNumberMixAlphaSubscriptWithExponent(mStrCell))
         mCellType = NUMBERMIXALPHASUBSCRIPTWITHEXPONENT;
-    else if (isNumberMixEXPSubscriptWithExponent(strCell))
+    else if (isNumberMixEXPSubscriptWithExponent(mStrCell))
         mCellType = NUMBERMIXEXPSUBSCRIPTWITHEXPONENT;
-    else if (isNumberMixPISubscriptWithExponent(strCell))
+    else if (isNumberMixPISubscriptWithExponent(mStrCell))
         mCellType = NUMBERMIXPISUBSCRIPTWITHEXPONENT;
     else
         mCellType = RESERVE;
@@ -40,7 +44,7 @@ Cell::Cell(const std::string& strCell)
 /* 1 */
 bool Cell::isNumber(std::string str)
 {
-    for(int i = 0;i < str.size(); i++) {
+    for(size_t i = 0;i < str.size(); i++) {
         if (!isdigit(str.at(i))) {
             return false;
         }
@@ -54,7 +58,7 @@ bool Cell::isAlpha(std::string str)
     if (str.size() != 1)
         return false;
 
-    for(int i = 0;i < str.size(); i++) {
+    for(size_t i = 0;i < str.size(); i++) {
         if (!isalpha(str.at(i))) {
             return false;
         }
@@ -321,4 +325,55 @@ bool Cell::isNumberMixPISubscriptWithExponent(std::string str)
         return false;
 
     return true;
+}
+
+
+/* a^(12) or a^(1/2) */
+std::string Cell::getExponent()
+{
+    std::string strRet;
+    int iPosStart = 0;
+    int iPosEnd = 0;
+
+    int iPos = mStrCell.find('^', 0);
+    if (iPos < 0)
+        return strRet;
+
+    iPosStart = mStrCell.find('(', 0);
+    if (iPosStart < 0)
+        return strRet;
+
+    iPosEnd = mStrCell.find(')', 0);
+    if (iPosEnd < 0)
+        return strRet;
+
+
+    iPosStart++;
+    strRet = mStrCell.substr(iPosStart, iPosEnd - iPosStart);
+
+
+    return strRet;
+}
+
+
+/* pi^12 */
+void Cell::addParentheses()
+{
+    int iPos = 0;
+
+    while (1) {
+        iPos = mStrCell.find('^', iPos);
+        if (iPos < 0)
+            break;
+
+        if (mStrCell.at(iPos + 1) == '(') {
+            iPos++;
+            continue;
+        }
+
+
+        mStrCell.insert(iPos + 1, "(");
+        mStrCell += ")";
+        iPos++;
+    }
 }

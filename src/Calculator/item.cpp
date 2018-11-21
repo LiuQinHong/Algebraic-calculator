@@ -52,11 +52,16 @@ void Item::delCell(Cell* cell)
     delete cell;
 }
 
-
+void Item::delAllCell(Cell* cell)
+{
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        delCell((*celllist_iter));
+    }
+}
 
 bool Item::isSimpleNumber(std::string str)
 {
-    for(int i = 0;i < str.size(); i++) {
+    for(size_t i = 0;i < str.size(); i++) {
         if ((str.at(i) == '+') || str.at(i) == '-')
             continue;
 
@@ -70,7 +75,7 @@ bool Item::isSimpleNumber(std::string str)
 
 bool Item::isSimpleAlpha(std::string str)
 {
-    for(int i = 0;i < str.size(); i++) {
+    for(size_t i = 0;i < str.size(); i++) {
         if ((str.at(i) == '+') || str.at(i) == '-')
             continue;
 
@@ -121,6 +126,7 @@ void Item::parseItemToCell(std::string& strItem)
     Cell *cell = new Cell(subStr);
     addCell(cell);
 
+    updateFromAllCell();
 }
 
 
@@ -159,7 +165,23 @@ void Item::parseCelltoItem()
     }
 }
 
+/* exp[0]^(12)*a^(12)*a^(1/2) */
+void Item::exponentUnfold(void)
+{
 
+}
+
+void Item::updateFromAllCell(void)
+{
+    std::string tmpStr = &mStrItem.at(0);
+
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        tmpStr += (*celllist_iter)->mStrCell;
+        tmpStr += "*";
+    }
+    tmpStr.pop_back();
+    mStrItem = tmpStr;
+}
 
 void Item::printAllCell(void)
 {
