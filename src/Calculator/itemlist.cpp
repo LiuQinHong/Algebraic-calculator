@@ -30,14 +30,10 @@ ItemList::ItemList(const std::string &str)
     for (int i = 0; i < iCount; i++) {
         dst[i] = acBuf[i] + dst[i];
         Item *item = new Item(dst[i]);
-        std::cout << "item->mStrItem = " << item->mStrItem << std::endl;
         addItem(item);
     }
 
-    std::cout << "mExpressionStr = " << mExpressionStr << std::endl;
     updateFromAllCell();
-    std::cout << "mExpressionStr = " << mExpressionStr << std::endl;
-
 }
 
 

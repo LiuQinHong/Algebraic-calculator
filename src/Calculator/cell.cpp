@@ -24,6 +24,8 @@ Cell::Cell(const std::string& strCell)
         mCellType = NUMBERMIXEXPSUBSCRIPT;
     else if (isNumberMixPISubscript(mStrCell))
         mCellType = NUMBERMIXPISUBSCRIPT;
+    else if (isNumberWithExponent(mStrCell))
+        mCellType = NUMBERWITHEXPONENT;
     else if (isAlphaWithExponent(mStrCell))
         mCellType = ALPHAWITHEXPONENT;
     else if (isExpWithExponent(mStrCell))
@@ -174,8 +176,21 @@ bool Cell::isNumberMixPISubscript(std::string str)
     return true;
 }
 
+/* 1^a or 123^a or 123^2 */
+bool Cell::isNumberWithExponent(std::string str)
+{
+    int iPos;
 
-/* a^2 */
+    iPos = str.find('^', 0);
+    if (iPos < 0)
+        return false;
+
+    std::string numStr = str.substr(0, iPos);
+
+    return isNumber(numStr);
+}
+
+/* a^(2) */
 bool Cell::isAlphaWithExponent(std::string str)
 {
     int iPos;
@@ -191,17 +206,10 @@ bool Cell::isAlphaWithExponent(std::string str)
     if (iPos != 1)
         return false;
 
-    /* 得到指数 */
-    std::string numStr = str.substr(iPos+1);
-
-    if (!isNumber(numStr))
-        return false;
-
-
     return true;
 }
 
-/* exp^2 */
+/* exp^(2) */
 bool Cell::isExpWithExponent(std::string str)
 {
     int iPos;
@@ -219,16 +227,11 @@ bool Cell::isExpWithExponent(std::string str)
     if (expStr != "exp")
         return false;
 
-    /* 得到指数 */
-    std::string numStr = str.substr(iPos+1);
-
-    if (!isNumber(numStr))
-        return false;
 
     return true;
 }
 
-/* pi^2 */
+/* pi^(2) */
 bool Cell::isPIwithExponent(std::string str)
 {
     int iPos;
@@ -246,16 +249,10 @@ bool Cell::isPIwithExponent(std::string str)
     if (expStr != "pi")
         return false;
 
-    /* 得到指数 */
-    std::string numStr = str.substr(iPos+1);
-
-    if (!isNumber(numStr))
-        return false;
-
     return true;
 }
 
-/* a[0]^2 */
+/* a[0]^(2) */
 bool Cell::isNumberMixAlphaSubscriptWithExponent(std::string str)
 {
     int iPos;
@@ -264,11 +261,6 @@ bool Cell::isNumberMixAlphaSubscriptWithExponent(std::string str)
     if (iPos < 0)
         return false;
 
-    /* 得到指数 */
-    std::string numStr = str.substr(iPos+1);
-
-    if (!isNumber(numStr))
-        return false;
 
     /* 得到a[0] */
     std::string numberMixAlphaSubscriptStr = str.substr(0, iPos);
@@ -279,7 +271,7 @@ bool Cell::isNumberMixAlphaSubscriptWithExponent(std::string str)
 }
 
 
-/* exp[0]^2 */
+/* exp[0]^(2) */
 bool Cell::isNumberMixEXPSubscriptWithExponent(std::string str)
 {
     int iPos;
@@ -288,11 +280,6 @@ bool Cell::isNumberMixEXPSubscriptWithExponent(std::string str)
     if (iPos < 0)
         return false;
 
-    /* 得到指数 */
-    std::string numStr = str.substr(iPos+1);
-
-    if (!isNumber(numStr))
-        return false;
 
     /* 得到exp[0] */
     std::string numberMixEXPSubscriptStr = str.substr(0, iPos);
@@ -304,7 +291,7 @@ bool Cell::isNumberMixEXPSubscriptWithExponent(std::string str)
 
 
 
-/* pi[0]^2 */
+/* pi[0]^(2) */
 bool Cell::isNumberMixPISubscriptWithExponent(std::string str)
 {
     int iPos;
@@ -313,11 +300,6 @@ bool Cell::isNumberMixPISubscriptWithExponent(std::string str)
     if (iPos < 0)
         return false;
 
-    /* 得到指数 */
-    std::string numStr = str.substr(iPos+1);
-
-    if (!isNumber(numStr))
-        return false;
 
     /* 得到pi[0] */
     std::string numberMixPISubscriptStr = str.substr(0, iPos);
@@ -337,24 +319,36 @@ std::string Cell::getExponent()
 
     int iPos = mStrCell.find('^', 0);
     if (iPos < 0)
-        return strRet;
+        return "\0";
 
     iPosStart = mStrCell.find('(', 0);
     if (iPosStart < 0)
-        return strRet;
+        return "\0";
 
     iPosEnd = mStrCell.find(')', 0);
     if (iPosEnd < 0)
-        return strRet;
+        return "\0";
 
 
-    iPosStart++;
-    strRet = mStrCell.substr(iPosStart, iPosEnd - iPosStart);
-
-
-    return strRet;
+    return mStrCell.substr(iPosStart + 1, iPosEnd - iPosStart);
 }
 
+/* a[123] exp[123] pi[123]^(123) */
+std::string Cell::getSubscript()
+{
+    int iPosStart = 0;
+    int iPosEnd = 0;
+
+    iPosStart = mStrCell.find('[', 0);
+    if (iPosStart < 0)
+        return "\0";
+
+    iPosEnd = mStrCell.find(']', 0);
+    if (iPosEnd < 0)
+        return "\0";
+
+    return mStrCell.substr(iPosStart+1, iPosEnd - iPosStart);
+}
 
 /* pi^12 */
 void Cell::addParentheses()
