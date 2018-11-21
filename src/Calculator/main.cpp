@@ -11,5 +11,7 @@ int main(int argc, char *argv[])
     Calculator w;
     w.show();
 
+    ItemList testList("111+a*b*y-a*y*2*b+b*2*a*y");
+    mergeItem(&testList);
     return a.exec();
 }

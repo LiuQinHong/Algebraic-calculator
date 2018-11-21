@@ -16,5 +16,6 @@ int judgeItem(Item& origItem, Item& newItem);
 int judgeItems(Item& origItem, Item& newItem,ItemList* itemList,std::list<Item*>::iterator& iter);
 int extractItemcoef(Item& origItem,Item& nextItem);
 void delItemzero(ItemList* itemList);
+void restoreCellLsist(Item &origItem,std::string &cofStr);
 
 #endif // MERGE_H

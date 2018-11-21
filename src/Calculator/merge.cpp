@@ -106,8 +106,8 @@ int judgeItems(Item& origItem, Item& newItem,ItemList* itemList,std::list<Item*>
         int cof = 0;
         std::string cofStr;
 
-        qDebug() << "origItem = " << origItem.mStrItem.c_str();
-        qDebug() << "newItem = " << newItem.mStrItem.c_str();
+        //qDebug() << "origItem = " << origItem.mStrItem.c_str();
+        //qDebug() << "newItem = " << newItem.mStrItem.c_str();
 
         cof = extractItemcoef(origItem,newItem);
 
@@ -228,4 +228,22 @@ void delItemzero(ItemList *itemList)
             itemList->mItemList.erase(itemList_iter++);
         }
     }
+}
+
+/********************************************
+ * Funtion   : 处理系数并恢复cell链表
+ * @origItem : 单项式
+ * @cofStr   : 系数
+*********************************************/
+void restoreCellLsist(Item &origItem, std::__cxx11::string &cofStr)
+{
+    Cell cofCell(cofStr);
+    cofStr.append("*");
+    if(cofStr.at(0) == '-'){
+        origItem.mStrItem.erase(0,1);
+        origItem.mStrItem.insert(0,cofStr);
+    }
+    else
+        origItem.mStrItem.insert(1,cofStr);
+    origItem.printAllCell();
 }
