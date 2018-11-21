@@ -50,6 +50,10 @@ public:
     bool isNumberMixAlphaSubscriptWithExponent(std::string str);
     bool isNumberMixEXPSubscriptWithExponent(std::string str);
     bool isNumberMixPISubscriptWithExponent(std::string str);
+
+    std::string getExponent();
+
+    void addParentheses();
 };
 
 #endif // CELL_H
