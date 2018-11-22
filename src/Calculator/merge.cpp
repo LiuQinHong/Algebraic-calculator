@@ -238,7 +238,7 @@ void Merge::makeItem(ItemList *itemList)
  * @origItem : 单项式
  * @cofStr   : 系数
 *********************************************/
-void Merge::restoreCellLsist(Item &origItem, std::__cxx11::string &cofStr)
+void Merge::restoreCellLsist(Item &origItem, std::string &cofStr)
 {
     std::string cofStrTemp = cofStr;
     cofStrTemp.erase(0,1);
