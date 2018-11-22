@@ -39,6 +39,13 @@ void Item::delAllCell()
     mCellList.clear();
 }
 
+void Item::eraseAllCell()
+{
+    for(std::list<Cell*>::iterator celllist_iter = mCellList.begin(); celllist_iter!= mCellList.end(); ++celllist_iter) {
+        mCellList.erase(celllist_iter++);
+    }
+}
+
 bool Item::isSimpleNumber(std::string str)
 {
     for(size_t i = 0;i < str.size(); i++) {
