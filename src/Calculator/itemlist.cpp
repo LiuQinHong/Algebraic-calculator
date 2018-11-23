@@ -9,6 +9,9 @@ ItemList::ItemList(const std::string &str)
     char acBuf[1024] = {0};
     int iPos = 0;
 
+    if (str.empty())
+        return;
+
     /* 去掉空格 */
     deleteAllMark(mExpressionStr, " ");
     deleteAllMark(mExpressionStr, "\t");
@@ -123,10 +126,12 @@ void ItemList::digitalMergeAllItem(void)
 
 void ItemList::printAllItem(void)
 {
+    std::cout << "==========printAllItem start==========" << std::endl;
     for(std::list<Item*>::iterator itemlist_iter = mItemList.begin(); itemlist_iter!= mItemList.end(); ++itemlist_iter) {
         std::cout << (*itemlist_iter)->mStrItem << std::endl;
         (*itemlist_iter)->printAllCell();
     }
+    std::cout << "==========printAllItem end==========" << std::endl;
 }
 
 
@@ -141,3 +146,19 @@ void ItemList::updateFromAllItem(void)
 
     mExpressionStr = tmpStr;
 }
+
+void ItemList::allExponentUnFold(void)
+{
+    for(std::list<Item*>::iterator itemlist_iter = mItemList.begin(); itemlist_iter!= mItemList.end(); ++itemlist_iter) {
+        (*itemlist_iter)->exponentUnfold();
+    }
+
+    updateFromAllItem();
+}
+
+void ItemList::allExponentFold(void)
+{
+
+}
+
+

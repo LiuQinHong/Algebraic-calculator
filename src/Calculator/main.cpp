@@ -4,19 +4,40 @@
 #include <algorithm>
 #include <qdebug.h>
 #include <iostream>
+#include <separation.h>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     Calculator w;
     //w.show();
-    //+1*a*exp*pi*a[0]*exp[0]*pi[0]*1^a*a^2*exp^2*pi^2*a[0]^2*exp[0]^2*pi[0]^2
-    ItemList testList("111+111+111+a*b*y-a*y*2*b+b*2*a*y-a*b*y+111-a*b*y+a[0]*b[0]*c[0]*2-a[0]*b[0]*c[0]*2+a*exp*pi"
-                      "+a[0]*exp[0]*pi[0]-2*a*pi*exp-222");
-    ItemList testList1("111+222");
-    testList1.printAllItem();
-    Merge merge(&testList1);
-    merge.mergeItem();
-    qDebug() << "mExpressionStr" << testList1.mExpressionStr.c_str();
+    QString den;
+    QString mole;
+    ItemList *denItemList;
+    ItemList *moleItemList;
+
+    Separation("a/b + c/d + (exp[0]^2 + 2)/(pi[0]^4 +  exp[0])", den, mole);
+
+    qDebug() << den;
+    qDebug() << mole;
+
+    denItemList = new ItemList(den.toStdString());
+
+    qDebug() << "denItemList = " << denItemList->mExpressionStr.c_str();
+    denItemList->allExponentUnFold();
+    qDebug() << "denItemList = " << denItemList->mExpressionStr.c_str();
+
+    moleItemList = new ItemList(mole.toStdString());
+
+    Merge denMerge(denItemList);
+    denMerge.mergeItem();
+
+    Merge moleMerge(moleItemList);
+    moleMerge.mergeItem();
+
+    qDebug() << moleItemList->mExpressionStr.c_str();
+    qDebug() << denItemList->mExpressionStr.c_str();
+
+
     return 0;
 }

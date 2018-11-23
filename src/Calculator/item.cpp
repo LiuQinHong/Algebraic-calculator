@@ -206,7 +206,7 @@ void Item::exponentUnfold(void)
     parseItemToCell(mStrItem);
 }
 
-/* a*a ---> a^2 */
+/* a*a*b*b ---> a^(2)*b^(2) */
 void Item::exponentFold(void)
 {
 

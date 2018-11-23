@@ -28,6 +28,9 @@ public:
     void digitalMergeAllItem(void);
     void printAllItem(void);
     void updateFromAllItem(void);
+
+    void allExponentUnFold(void);
+    void allExponentFold(void);
 };
 
 #endif // ITEMLIST_H
