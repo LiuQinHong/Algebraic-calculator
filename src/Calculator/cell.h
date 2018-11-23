@@ -36,6 +36,7 @@ public:
     Cell(const std::string& strCell, enum CellType type):mStrCell(strCell),mCellType(type){}
 
     bool isNumber(std::string str);
+    bool isDecimals(std::string str);
     bool isAlpha(std::string str);
     bool isExp(std::string str);
     bool isPI(std::string str);

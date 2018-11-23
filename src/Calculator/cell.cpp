@@ -12,6 +12,8 @@ Cell::Cell(const std::string& strCell)
 
     if (isNumber(mStrCell))
         mCellType = NUMBER;
+    if (isDecimals(mStrCell))
+        mCellType = NUMBER;
     else if (isAlpha(mStrCell))
         mCellType = ALPHA;
     else if (isExp(mStrCell))
@@ -53,6 +55,27 @@ bool Cell::isNumber(std::string str)
     }
     return true;
 }
+
+/* 1.123 */
+bool Cell::isDecimals(std::string str)
+{
+    int iPos;
+    std::string front;
+    std::string back;
+
+    iPos = str.find(".");
+    if (iPos < 0)
+        return false;
+
+    front = str.substr(0, iPos);
+    back = str.substr(iPos+1);
+
+    if (!isNumber(front) || !isNumber(back))
+        return false;
+
+    return true;
+}
+
 
 /* a */
 bool Cell::isAlpha(std::string str)

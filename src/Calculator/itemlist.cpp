@@ -39,7 +39,7 @@ ItemList::ItemList(const std::string &str)
     }
 
     updateFromAllItem();
-    digitalMergeAllItem();
+    //digitalMergeAllItem();
 
 }
 
