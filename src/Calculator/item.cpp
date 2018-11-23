@@ -1,5 +1,5 @@
 #include <item.h>
-
+#include <qdebug.h>
 /*
  *  单项式单元实现方法
 */
@@ -117,8 +117,6 @@ void Item::parseItemToCell(std::string& strItem)
     }
 
     std::string subStr = tmpStr.substr(iPosStart);
-    if (subStr == "1")
-        return;
 
     Cell *cell = new Cell(subStr);
     addCell(cell);
@@ -236,6 +234,7 @@ void Item::digitalMerge(void)
 
     numStream << iSum;
     numStream >> numStr;
+
     tmpStr = mStrItem.at(0) + numStr + "*" + tmpStr;
     tmpStr.pop_back();
 

@@ -5,7 +5,6 @@ ItemData::ItemData(QString data,uchar type){
    this->mData = data ;
    this->mType = type;
 }
-
 ItemData::ItemData(QChar data,uchar type){
    this->mData = QString(data );
    this->mType = type;
@@ -180,8 +179,40 @@ int EpreToPostfixList(QString src ,QList<ItemData>& PostfixList ){
                 ItemList << ItemData(TempStr,ITEM_DATA_TYPE_DATA) ;
                 TempStr.clear();
             }
+            /* status 2 : (a+b)^(a+c) */
+            if(src[iPos]=='('){
+                int status = 1;
+                int jPos = iPos;
+                QString TmpStr2;
+                TmpStr2.clear();
+                do{
+                    TmpStr2 += src[jPos];
+                    jPos++;
+                    QChar ch = src[jPos];
+                    if(ch=='('){
+                        status += 1;
+                    }else if(ch==')'){
+                        status -= 1;
+                    }
+                    //qDebug()<< "status "<< status;
+                    if(status == 0){
+                        break ;
+                    }
+                }while(jPos<src.length());
+                /* add '(' */
+                TmpStr2 += src[jPos];
+                //qDebug()<< "src[jPos+1] "<<src[jPos+1];
+
+                if(src[jPos+1]=='^'){
+                   iPos = jPos;
+                   TempStr+=TmpStr2;
+                   continue;
+                }else{
+                   ItemList << ItemData(src[iPos],ITEM_DATA_TYPE_OPERATOR) ;
+                   continue;
+                }
+            }
             ItemList << ItemData(src[iPos],ITEM_DATA_TYPE_OPERATOR) ;
-            continue;
         }else{
             /* if it is the end, break */
             if(src[iPos]=='\0') {
@@ -382,14 +413,13 @@ static void ResultToQString(CalStackCell &result ,QString & den,QString &mole){
         }
         mole += result.mMole[i].mData;
     }
-    qDebug()<< "mole" << mole ;
-    qDebug()<< "Den " << den ;
+    //qDebug()<< "mole" << mole ;
+    //qDebug()<< "Den " << den ;
 }
 
 int Separation(const QString src,QString &den,QString &mole){
     QList<ItemData> PostfixList;
     QString src_Str = src;
-
 
     src_Str.remove(QChar(' '),Qt::CaseInsensitive);
 
@@ -398,10 +428,12 @@ int Separation(const QString src,QString &den,QString &mole){
      */
     pre_process_src(src_Str);
     if(EpreToPostfixList(src_Str,PostfixList)){
+        qDebug()<< "EpreToPostfixList fail ";
         return -1;
     }
     CalStackCell result;
     if(CalPostfixList(PostfixList,result)){
+         qDebug()<< "EpreToPostfixList fail ";
         return -1;
     }
     ResultToQString(result,den,mole);

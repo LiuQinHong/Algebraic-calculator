@@ -1,5 +1,5 @@
 #include <itemlist.h>
-
+#include <qdebug.h>
 
 ItemList::ItemList(const std::string &str)
     :mExpressionStr(str)
@@ -17,7 +17,6 @@ ItemList::ItemList(const std::string &str)
     deleteAllMark(mExpressionStr, "\t");
     deleteAllMark(mExpressionStr, "\r");
     deleteAllMark(mExpressionStr, "\n");
-
 
     if ((mExpressionStr.at(0) != '+') &&  mExpressionStr.at(0) != '-') {
         acBuf[iPos] = '+';
@@ -41,6 +40,7 @@ ItemList::ItemList(const std::string &str)
 
     updateFromAllItem();
     digitalMergeAllItem();
+
 }
 
 
